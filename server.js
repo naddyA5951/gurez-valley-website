@@ -111,7 +111,12 @@ async function handleEnquiriesList(response) {
 
 async function serveStatic(request, response) {
   const requestUrl = new URL(request.url, `http://${request.headers.host}`);
-  const requestedPath = requestUrl.pathname === "/" ? "/index.html" : requestUrl.pathname;
+  const routeAliases = {
+    "/": "/index.html",
+    "/admin": "/admin.html",
+    "/enquiries": "/admin.html"
+  };
+  const requestedPath = routeAliases[requestUrl.pathname] || requestUrl.pathname;
   const safePath = path.normalize(decodeURIComponent(requestedPath)).replace(/^(\.\.[/\\])+/, "");
   const filePath = path.join(ROOT, safePath);
 
