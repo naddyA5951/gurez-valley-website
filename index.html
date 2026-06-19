@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gurez Valley Tourism</title>
+  <meta name="description" content="A responsive tourism website for Gurez Valley, Kashmir.">
+  <style>
+    :root {
+      --ink: #1b2724;
+      --muted: #5c6864;
+      --paper: #f7f3ea;
+      --mist: #eef5f3;
+      --pine: #21483e;
+      --river: #2f7b88;
+      --saffron: #d18b3a;
+      --snow: #ffffff;
+      --line: rgba(27, 39, 36, 0.14);
+      --shadow: 0 18px 45px rgba(17, 35, 31, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px clamp(18px, 4vw, 56px);
+      color: var(--snow);
+      background: linear-gradient(to bottom, rgba(9, 23, 20, 0.72), rgba(9, 23, 20, 0));
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--saffron);
+      color: #1c1711;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 28px);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav-links a {
+      opacity: 0.9;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+    }
+
+    .button {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 800;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+      background: var(--saffron);
+      color: #21170a;
+      box-shadow: 0 10px 24px rgba(209, 139, 58, 0.35);
+    }
+
+    .button-light {
+      background: rgba(255, 255, 255, 0.16);
+      color: var(--snow);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero {
+      min-height: 92vh;
+      position: relative;
+      display: grid;
+      align-items: end;
+      padding: 118px clamp(18px, 5vw, 70px) 64px;
+      color: var(--snow);
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(6, 20, 18, 0.86), rgba(6, 20, 18, 0.36) 52%, rgba(6, 20, 18, 0.18)),
+        url("https://upload.wikimedia.org/wikipedia/commons/7/76/Habba_Khatoon.jpg") center / cover no-repeat;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 120px;
+      background: linear-gradient(to top, var(--paper), rgba(247, 243, 234, 0));
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 790px;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: #f2c98e;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: clamp(46px, 8vw, 104px);
+      max-width: 760px;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      margin: 22px 0 28px;
+      font-size: clamp(17px, 2vw, 21px);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-stats {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 1px;
+      max-width: 980px;
+      margin-top: 58px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(12px);
+    }
+
+    .stat {
+      padding: 18px;
+      min-height: 98px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .section {
+      padding: clamp(64px, 8vw, 108px) clamp(18px, 5vw, 70px);
+    }
+
+    .section-alt {
+      background: var(--mist);
+    }
+
+    .section-head {
+      max-width: 780px;
+      margin-bottom: 34px;
+    }
+
+    .section-head p {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    h2 {
+      font-size: clamp(32px, 5vw, 58px);
+    }
+
+    h3 {
+      font-size: 23px;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.65fr);
+      gap: clamp(28px, 5vw, 70px);
+      align-items: center;
+    }
+
+    .intro-text p {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .photo-stack {
+      display: grid;
+      grid-template-columns: 1fr 0.82fr;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .photo-stack img {
+      width: 100%;
+      height: 410px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .photo-stack img:last-child {
+      height: 300px;
+      margin-bottom: -42px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      min-height: 255px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--snow);
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(35, 54, 49, 0.08);
+    }
+
+    .card img {
+      height: 170px;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .card-body p {
+      margin: 10px 0 0;
+      color: var(--muted);
+    }
+
+    .planner {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    .tabs {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--snow);
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      color: var(--ink);
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--pine);
+      color: var(--snow);
+      border-color: var(--pine);
+    }
+
+    .plan-panel {
+      border-radius: 8px;
+      background: var(--snow);
+      border: 1px solid var(--line);
+      padding: clamp(22px, 4vw, 40px);
+      box-shadow: var(--shadow);
+    }
+
+    .plan-panel[hidden] {
+      display: none;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 62px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .day {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #e8f1ee;
+      color: var(--pine);
+      font-weight: 900;
+    }
+
+    .timeline-item p {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .guide-tile {
+      min-height: 190px;
+      padding: 24px;
+      border-radius: 8px;
+      background: var(--pine);
+      color: var(--snow);
+    }
+
+    .guide-tile:nth-child(2) {
+      background: var(--river);
+    }
+
+    .guide-tile:nth-child(3) {
+      background: #76613e;
+    }
+
+    .guide-tile:nth-child(4) {
+      background: #513b57;
+    }
+
+    .guide-tile p {
+      margin: 12px 0 0;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr 1fr;
+      grid-auto-rows: 220px;
+      gap: 14px;
+    }
+
+    .gallery figure {
+      margin: 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #d7dfdc;
+    }
+
+    .gallery figure:first-child {
+      grid-row: span 2;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 300ms ease;
+    }
+
+    .gallery figure:hover img {
+      transform: scale(1.04);
+    }
+
+    .gallery figcaption {
+      position: absolute;
+      inset: auto 12px 12px 12px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      width: fit-content;
+      max-width: calc(100% - 24px);
+      color: var(--snow);
+      background: rgba(7, 24, 21, 0.72);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .cta {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.55fr);
+      gap: clamp(28px, 5vw, 70px);
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(14, 38, 34, 0.93), rgba(14, 38, 34, 0.72)),
+        url("https://upload.wikimedia.org/wikipedia/commons/9/91/A_river_sight_from_Gurez-Tulail_Valley.jpg") center / cover no-repeat;
+      color: var(--snow);
+    }
+
+    .cta p {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 18px;
+    }
+
+    form {
+      display: grid;
+      gap: 12px;
+      padding: 22px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      backdrop-filter: blur(14px);
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      border-radius: 8px;
+      padding: 11px 12px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .form-status {
+      min-height: 22px;
+      color: #f7d6a4;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    footer {
+      padding: 30px clamp(18px, 5vw, 70px);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      background: #efe8da;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    @media (max-width: 920px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-stats,
+      .cards,
+      .guide-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .intro-grid,
+      .planner,
+      .cta {
+        grid-template-columns: 1fr;
+      }
+
+      .planner {
+        gap: 18px;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .photo-stack img:last-child {
+        margin-bottom: 0;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero {
+        min-height: 88vh;
+        padding-top: 94px;
+      }
+
+      .hero-actions,
+      .button {
+        width: 100%;
+      }
+
+      .hero-stats,
+      .cards,
+      .guide-grid,
+      .tabs,
+      .gallery,
+      .photo-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .stat {
+        min-height: auto;
+      }
+
+      .photo-stack img,
+      .photo-stack img:last-child {
+        height: 270px;
+      }
+
+      .gallery {
+        grid-auto-rows: 240px;
+      }
+
+      .gallery figure:first-child {
+        grid-row: span 1;
+      }
+
+      .timeline-item {
+        grid-template-columns: 48px minmax(0, 1fr);
+      }
+
+      .day {
+        width: 44px;
+        height: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav" aria-label="Primary navigation">
+    <a class="brand" href="#top" aria-label="Gurez Valley home">
+      <span class="brand-mark">G</span>
+      <span>Gurez Valley</span>
+    </a>
+    <nav class="nav-links" aria-label="Page sections">
+      <a href="#highlights">Highlights</a>
+      <a href="#plan">Plan</a>
+      <a href="#travel">Travel Info</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#enquire">Enquire</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-label="Gurez Valley scenic hero">
+      <div class="hero-content">
+        <p class="eyebrow">Bandipora, Jammu and Kashmir</p>
+        <h1>Gurez Valley</h1>
+        <p class="hero-copy">A high Himalayan valley of river bends, wooden villages, quiet meadows, and the pyramid-like Habba Khatoon peak.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#plan">Plan a Trip</a>
+          <a class="button button-light" href="#highlights">Explore Highlights</a>
+        </div>
+      </div>
+
+      <div class="hero-stats" aria-label="Quick facts">
+        <div class="stat">
+          <strong>2,580 m</strong>
+          <span>Approx. elevation</span>
+        </div>
+        <div class="stat">
+          <strong>123 km</strong>
+          <span>From Srinagar</span>
+        </div>
+        <div class="stat">
+          <strong>May-Oct</strong>
+          <span>Best road season</span>
+        </div>
+        <div class="stat">
+          <strong>Dawar</strong>
+          <span>Main township</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="highlights">
+      <div class="intro-grid">
+        <div class="intro-text">
+          <p class="eyebrow">Why visit</p>
+          <h2>Where Kashmir feels remote, slow, and wide open.</h2>
+          <p>Gurez sits north of the main Kashmir Valley, close to the great Himalayan range. The Kishenganga, also known downstream as the Neelum River, runs through the valley while mountain walls and alpine fields shape every view.</p>
+          <p>The destination is known for Habba Khatoon peak, Dawar village, Tulail side trips, trout streams, Dard-Shin culture, and road journeys over Razdan Pass.</p>
+        </div>
+        <div class="photo-stack" aria-label="Gurez Valley photographs">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Habba_Khatoon.jpg" alt="Habba Khatoon peak and river in Gurez Valley">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/A_river_sight_from_Gurez-Tulail_Valley.jpg" alt="Gurez Tulail river valley with mountain road">
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="section-head">
+        <p class="eyebrow">Top experiences</p>
+        <h2>Build the trip around these places.</h2>
+        <p>Use these stops as the backbone for a compact weekend escape or a slower valley journey.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Habba_Khatoon.jpg" alt="Habba Khatoon peak in Gurez">
+          <div class="card-body">
+            <h3>Habba Khatoon Peak</h3>
+            <p>The iconic pyramid-shaped mountain that frames many of Gurez Valley's most memorable views.</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/A_river_sight_from_Gurez-Tulail_Valley.jpg" alt="Kishenganga river flowing through Gurez Tulail">
+          <div class="card-body">
+            <h3>Kishenganga River</h3>
+            <p>A glacier-fed river corridor for riverside walks, photography, bridge views, and trout country atmosphere.</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Wooden_houses_in_Tulail.jpg/1024px-Wooden_houses_in_Tulail.jpg" alt="Wooden houses in Tulail Valley">
+          <div class="card-body">
+            <h3>Tulail Valley</h3>
+            <p>A quieter sub-valley with wooden homes, open slopes, and village-to-village mountain scenery.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="plan">
+      <div class="section-head">
+        <p class="eyebrow">Suggested routes</p>
+        <h2>Choose your pace.</h2>
+        <p>These sample plans are designed for travelers starting from Srinagar or Bandipora.</p>
+      </div>
+      <div class="planner">
+        <div class="tabs" role="tablist" aria-label="Itinerary duration">
+          <button class="tab" id="tab-short" role="tab" aria-selected="true" aria-controls="plan-short" data-plan="short">2 Days</button>
+          <button class="tab" id="tab-balanced" role="tab" aria-selected="false" aria-controls="plan-balanced" data-plan="balanced">3 Days</button>
+          <button class="tab" id="tab-slow" role="tab" aria-selected="false" aria-controls="plan-slow" data-plan="slow">5 Days</button>
+        </div>
+
+        <article class="plan-panel" id="plan-short" role="tabpanel" aria-labelledby="tab-short">
+          <h3>2-Day Scenic Escape</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <span class="day">1</span>
+              <div>
+                <strong>Srinagar to Dawar via Bandipora and Razdan Pass</strong>
+                <p>Start early, pause at pass viewpoints, reach Dawar by evening, and walk near the river before sunset.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="day">2</span>
+              <div>
+                <strong>Habba Khatoon viewpoint and return</strong>
+                <p>Photograph the peak at morning light, visit nearby villages, then drive back with buffer time.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="plan-panel" id="plan-balanced" role="tabpanel" aria-labelledby="tab-balanced" hidden>
+          <h3>3-Day Valley Classic</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <span class="day">1</span>
+              <div>
+                <strong>Arrival in Dawar</strong>
+                <p>Make the road journey the experience: Wular side, Bandipora, Razdan Pass, and first views of Gurez.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="day">2</span>
+              <div>
+                <strong>Habba Khatoon and river villages</strong>
+                <p>Spend the full day around Dawar, the river, and local viewpoints without rushing the altitude.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="day">3</span>
+              <div>
+                <strong>Tulail side drive and departure</strong>
+                <p>Explore deeper village landscapes if roads permit, then return toward Srinagar or stay another night.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="plan-panel" id="plan-slow" role="tabpanel" aria-labelledby="tab-slow" hidden>
+          <h3>5-Day Slow Travel</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <span class="day">1</span>
+              <div>
+                <strong>Transfer and acclimatize</strong>
+                <p>Reach Dawar, keep the evening easy, and settle into the mountain rhythm.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="day">2</span>
+              <div>
+                <strong>Habba Khatoon and Dawar</strong>
+                <p>Visit viewpoints, talk to local hosts, and keep time for photography near the river.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="day">3</span>
+              <div>
+                <strong>Tulail Valley day</strong>
+                <p>Travel through wooden-house villages and mountain fields, with flexible stops along the route.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="day">4</span>
+              <div>
+                <strong>Local culture and leisure</strong>
+                <p>Use the day for homestay food, slow walks, trout-side views, and weather buffer.</p>
+              </div>
+            </div>
+            <div class="timeline-item">
+              <span class="day">5</span>
+              <div>
+                <strong>Return through Razdan Pass</strong>
+                <p>Leave after breakfast and keep daylight for the mountain road back to Srinagar.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="travel">
+      <div class="section-head">
+        <p class="eyebrow">Travel essentials</p>
+        <h2>Know before you go.</h2>
+      </div>
+      <div class="guide-grid">
+        <article class="guide-tile">
+          <h3>Season</h3>
+          <p>Plan for late spring to autumn. Heavy snow can close Razdan Pass during winter months.</p>
+        </article>
+        <article class="guide-tile">
+          <h3>Route</h3>
+          <p>The common road approach is Srinagar to Bandipora, then onward to Gurez via Razdan Pass.</p>
+        </article>
+        <article class="guide-tile">
+          <h3>Stay</h3>
+          <p>Dawar is the most practical base for guesthouses, local stays, meals, and onward valley drives.</p>
+        </article>
+        <article class="guide-tile">
+          <h3>Carry</h3>
+          <p>Pack warm layers, cash, offline maps, ID, medicines, and extra time for mountain-road delays.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="gallery">
+      <div class="section-head">
+        <p class="eyebrow">Gallery</p>
+        <h2>Views that define Gurez.</h2>
+      </div>
+      <div class="gallery">
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Habba_Khatoon.jpg" alt="Wide view of Habba Khatoon peak and Gurez Valley">
+          <figcaption>Habba Khatoon</figcaption>
+        </figure>
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/A_river_sight_from_Gurez-Tulail_Valley.jpg" alt="River bend between mountains in Gurez Tulail">
+          <figcaption>River valley</figcaption>
+        </figure>
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Wooden_houses_in_Tulail.jpg/1024px-Wooden_houses_in_Tulail.jpg" alt="Traditional wooden houses in Tulail Valley">
+          <figcaption>Tulail homes</figcaption>
+        </figure>
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Habba_Khatoon.jpg" alt="Meadow and mountain view in Gurez Valley">
+          <figcaption>Mountain meadows</figcaption>
+        </figure>
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/A_river_sight_from_Gurez-Tulail_Valley.jpg" alt="Mountain river route in the Gurez Tulail area">
+          <figcaption>Mountain road</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section cta" id="enquire">
+      <div>
+        <p class="eyebrow">Start planning</p>
+        <h2>Make Gurez your next mountain escape.</h2>
+        <p>Share your preferred dates and travel style. This demo form gives instant feedback and can be connected to a real booking or email service later.</p>
+      </div>
+      <form id="enquiry-form">
+        <label>
+          Name
+          <input type="text" name="name" placeholder="Your name" required>
+        </label>
+        <label>
+          Trip length
+          <select name="length" required>
+            <option value="">Select days</option>
+            <option>2 days</option>
+            <option>3 days</option>
+            <option>5 days</option>
+            <option>Custom</option>
+          </select>
+        </label>
+        <label>
+          Message
+          <textarea name="message" placeholder="Tell us what kind of trip you want"></textarea>
+        </label>
+        <button class="button button-primary" type="submit">Send Enquiry</button>
+        <p class="form-status" id="form-status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <span>Gurez Valley Tourism Website</span>
+    <span>Designed for a school or portfolio destination project.</span>
+  </footer>
+
+  <script>
+    const tabs = document.querySelectorAll(".tab");
+    const panels = document.querySelectorAll(".plan-panel");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = `plan-${tab.dataset.plan}`;
+        tabs.forEach((item) => item.setAttribute("aria-selected", String(item === tab)));
+        panels.forEach((panel) => {
+          panel.hidden = panel.id !== target;
+        });
+      });
+    });
+
+    document.querySelector("#enquiry-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const status = document.querySelector("#form-status");
+      const button = form.querySelector("button[type='submit']");
+      const formData = new FormData(form);
+
+      button.disabled = true;
+      status.textContent = "Sending enquiry...";
+
+      try {
+        const response = await fetch("/api/enquiries", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: formData.get("name"),
+            length: formData.get("length"),
+            message: formData.get("message")
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Could not send enquiry.");
+        }
+
+        status.textContent = result.message;
+        form.reset();
+      } catch (error) {
+        status.textContent = error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

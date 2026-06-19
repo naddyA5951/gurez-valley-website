@@ -1,0 +1,16 @@
+{
+  "name": "gurez-valley-website",
+  "version": "1.0.0",
+  "description": "Tourism website for Gurez Valley with a simple enquiry backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "gurez",
+    "tourism",
+    "backend"
+  ],
+  "author": "",
+  "license": "MIT"
+}
