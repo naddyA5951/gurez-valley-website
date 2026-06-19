@@ -516,6 +516,19 @@
       margin: 0;
     }
 
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .contact-actions .button {
+      min-height: 42px;
+      padding: 10px 14px;
+      font-size: 14px;
+    }
+
     footer {
       padding: 30px clamp(18px, 5vw, 70px);
       display: flex;
@@ -864,7 +877,7 @@
       <div>
         <p class="eyebrow">Start planning</p>
         <h2>Make Gurez your next mountain escape.</h2>
-        <p>Share your preferred dates and travel style. This demo form gives instant feedback and can be connected to a real booking or email service later.</p>
+        <p>Share your preferred dates and travel style. Enquiries are saved in the admin panel, and visitors can send the same request directly to WhatsApp or email.</p>
       </div>
       <form id="enquiry-form">
         <label>
@@ -887,6 +900,14 @@
         </label>
         <button class="button button-primary" type="submit">Send Enquiry</button>
         <p class="form-status" id="form-status" aria-live="polite"></p>
+        <div class="contact-actions" id="contact-actions" hidden>
+          <a class="button button-light" id="whatsapp-link" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
+          <a class="button button-light" id="email-link" href="#">Send by Email</a>
+        </div>
+        <div class="contact-actions">
+          <a class="button button-light" href="https://wa.me/916005939752" target="_blank" rel="noopener">WhatsApp: +91 6005939752</a>
+          <a class="button button-light" href="mailto:naveedalicodes1@gmail.com">Email: naveedalicodes1@gmail.com</a>
+        </div>
       </form>
     </section>
   </main>
@@ -899,6 +920,8 @@
   <script>
     const tabs = document.querySelectorAll(".tab");
     const panels = document.querySelectorAll(".plan-panel");
+    const ownerEmail = "naveedalicodes1@gmail.com";
+    const ownerWhatsApp = "916005939752";
 
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
@@ -915,9 +938,20 @@
       const form = event.currentTarget;
       const status = document.querySelector("#form-status");
       const button = form.querySelector("button[type='submit']");
+      const contactActions = document.querySelector("#contact-actions");
       const formData = new FormData(form);
+      const name = formData.get("name").trim();
+      const length = formData.get("length").trim();
+      const message = formData.get("message").trim() || "No message provided.";
+      const enquiryText = [
+        "New Gurez Valley enquiry",
+        `Name: ${name}`,
+        `Trip length: ${length}`,
+        `Message: ${message}`
+      ].join("\n");
 
       button.disabled = true;
+      contactActions.hidden = true;
       status.textContent = "Sending enquiry...";
 
       try {
@@ -927,9 +961,9 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            name: formData.get("name"),
-            length: formData.get("length"),
-            message: formData.get("message")
+            name,
+            length,
+            message
           })
         });
 
@@ -940,6 +974,9 @@
         }
 
         status.textContent = result.message;
+        document.querySelector("#whatsapp-link").href = `https://wa.me/${ownerWhatsApp}?text=${encodeURIComponent(enquiryText)}`;
+        document.querySelector("#email-link").href = `mailto:${ownerEmail}?subject=${encodeURIComponent("Gurez Valley Trip Enquiry")}&body=${encodeURIComponent(enquiryText)}`;
+        contactActions.hidden = false;
         form.reset();
       } catch (error) {
         status.textContent = error.message;
