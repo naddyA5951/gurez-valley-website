@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gurez Valley Enquiries</title>
+  <style>
+    :root {
+      --ink: #1b2724;
+      --muted: #5c6864;
+      --paper: #f7f3ea;
+      --pine: #21483e;
+      --saffron: #d18b3a;
+      --line: rgba(27, 39, 36, 0.14);
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      padding: 28px clamp(18px, 5vw, 64px);
+      background: var(--pine);
+      color: var(--white);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 48px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    a,
+    button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
+      background: var(--saffron);
+      color: #21170a;
+      font: inherit;
+      font-weight: 800;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    main {
+      padding: clamp(28px, 5vw, 64px);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 22px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      padding: 20px;
+      box-shadow: 0 12px 28px rgba(35, 54, 49, 0.08);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    time,
+    .trip {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      white-space: pre-wrap;
+    }
+
+    .empty,
+    .error {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .error {
+      color: #9f2d2d;
+    }
+
+    @media (max-width: 700px) {
+      header,
+      .toolbar,
+      .card-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Gurez Enquiries</h1>
+      <div id="summary">Loading saved trip enquiries...</div>
+    </div>
+    <a href="/">Back to Website</a>
+  </header>
+
+  <main>
+    <div class="toolbar">
+      <span>Latest submissions appear first.</span>
+      <button type="button" id="refresh">Refresh</button>
+    </div>
+    <div class="grid" id="enquiries"></div>
+  </main>
+
+  <script>
+    const list = document.querySelector("#enquiries");
+    const summary = document.querySelector("#summary");
+    const refresh = document.querySelector("#refresh");
+
+    function formatDate(value) {
+      return new Intl.DateTimeFormat("en", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(new Date(value));
+    }
+
+    function renderEnquiries(enquiries) {
+      summary.textContent = `${enquiries.length} enquiry${enquiries.length === 1 ? "" : "ies"} saved`;
+
+      if (!enquiries.length) {
+        list.innerHTML = '<div class="empty">No enquiries yet. Submit the form on the website, then refresh this page.</div>';
+        return;
+      }
+
+      list.innerHTML = enquiries.map((enquiry) => `
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h2>${escapeHtml(enquiry.name)}</h2>
+              <div class="trip">${escapeHtml(enquiry.tripLength)}</div>
+            </div>
+            <time datetime="${escapeHtml(enquiry.createdAt)}">${formatDate(enquiry.createdAt)}</time>
+          </div>
+          <p>${escapeHtml(enquiry.message || "No message provided.")}</p>
+        </article>
+      `).join("");
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function loadEnquiries() {
+      refresh.disabled = true;
+
+      try {
+        const response = await fetch("/api/enquiries");
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Could not load enquiries.");
+        }
+
+        renderEnquiries(result.enquiries);
+      } catch (error) {
+        summary.textContent = "Could not load enquiries";
+        list.innerHTML = `<div class="error">${escapeHtml(error.message)}</div>`;
+      } finally {
+        refresh.disabled = false;
+      }
+    }
+
+    refresh.addEventListener("click", loadEnquiries);
+    loadEnquiries();
+  </script>
+</body>
+</html>

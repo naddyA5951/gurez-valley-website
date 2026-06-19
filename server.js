@@ -97,6 +97,18 @@ async function handleEnquiry(request, response) {
   }
 }
 
+async function handleEnquiriesList(response) {
+  try {
+    const enquiries = await readEnquiries();
+    sendJson(response, 200, {
+      count: enquiries.length,
+      enquiries: enquiries.slice().reverse()
+    });
+  } catch (error) {
+    sendJson(response, 500, { error: "Could not load enquiries." });
+  }
+}
+
 async function serveStatic(request, response) {
   const requestUrl = new URL(request.url, `http://${request.headers.host}`);
   const requestedPath = requestUrl.pathname === "/" ? "/index.html" : requestUrl.pathname;
@@ -121,6 +133,11 @@ async function serveStatic(request, response) {
 }
 
 const server = http.createServer(async (request, response) => {
+  if (request.method === "GET" && request.url === "/api/enquiries") {
+    await handleEnquiriesList(response);
+    return;
+  }
+
   if (request.method === "POST" && request.url === "/api/enquiries") {
     await handleEnquiry(request, response);
     return;
